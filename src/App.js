@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
+import { useState } from 'react';
 
 import logo from './logo.svg';
 import './App.css';
 import axios from 'axios'
+
+// connection.connect();
 
 const api = axios.create({
   baseURL: 'http://jsonplaceholder.typicode.com/users'
@@ -11,13 +14,21 @@ const api = axios.create({
 
 class App extends Component{
 
+  //const [name, setName] = useState("");
+  myChangeHandler = (event) => {
+    this.setState({username: event.target.value});
+    this.setState({user: event.target.value});
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      courses: []
+      courses: [],
+      user: this.state = { username: '' },
+      phone:"1234"
     }
 
-    axios.get('http://jsonplaceholder.typicode.com/users')
+    axios.get('http://localhost:8080/user')
     .then(response => response.data)
     .then((data) => {
       this.setState({ courses: data})
@@ -26,6 +37,13 @@ class App extends Component{
 
   }
 
+  create_ = async () => {
+    axios.post('http://localhost:8080/create',{
+      name: this.state.user,
+      phone: this.state.phone
+    })
+
+  }
 
     createPost = async () => {
       var data = [
@@ -61,13 +79,20 @@ class App extends Component{
     return (
     <div className="App">
       <header className="App-header">
+      <h1>Hello {this.state.username} Email: {this.state.phone}</h1>
+      Enter your name:
+      <input type='text' onChange={this.myChangeHandler}/>
+      <button onClick={this.create_}>CREATE</button>
+      <br/>
+
+
       <button onClick={this.createCourse}>createCourse</button>
       <button onClick={this.createPost}>createPost</button>
         <div>
           <ul>
             {this.state.courses.map(course =>(
               <li key={course.id}>
-              Name: {course.name}
+              Name: {course.name} | Phone: {course.phone}
               </li>
             ))}
           </ul>
